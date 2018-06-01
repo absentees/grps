@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cache = require('apicache').middleware;
 const Xray = require('x-ray');
 const x = Xray({
 	filters: {
@@ -8,6 +9,8 @@ const x = Xray({
 		}
 	}
 });
+
+app.use(cache('1 day'));
 
 app.get('/', (req, res) => {
 	x('https://www.drnks.com/collections/all', '.product', [{
@@ -21,7 +24,7 @@ app.get('/', (req, res) => {
 		});
 		results.sort((a, b) => {
 			return a.price - b.price;
-		});
+        });
 		res.send(results);
 	});
 });
