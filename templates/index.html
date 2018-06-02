@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>GRPS</title>
+	<style>
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
+
+		.wine-container {
+			display: flex;
+			justify-content: space-around;
+			flex-wrap: wrap;
+			width: 100%;
+		}
+
+		.wine {
+			width: 150px;
+			margin: 10px 5px;
+
+			font-size: 14px;
+		}
+
+		.wine:hover h3 {
+			text-decoration: underline;
+		}
+
+		.wine>img {
+			width: 100%;
+		}
+
+		.wine>h3 {
+			font-size: 1em;
+			margin-bottom: 0;
+		}
+
+		.wine .location {
+			display: block;
+			font-size: 0.8em;
+		}
+
+		.wine .price {
+			display: block;
+			font-weight: bolder;
+			margin-top: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app">
+		<div class="wine-container">
+			{% for wine in wines %}
+			<a href="{{ wine.link }}" target="_blank">
+				<div class="wine">
+					<img src="{{wine.imgURL}}" alt="{{wine.title}}">
+					<h3>{{wine.title}}</h3>
+					<span class="location">{{wine.location}}</span>
+					<span class="price">${{wine.price}}</span>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+</body>
+
+</html>
