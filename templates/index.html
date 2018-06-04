@@ -50,6 +50,7 @@
 			margin-top: 5px;
 		}
 	</style>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
 </head>
 
 <body>
@@ -58,7 +59,7 @@
 			{% for wine in wines %}
 			<a href="{{ wine.link }}" target="_blank">
 				<div class="wine">
-					<img src="{{wine.imgURL}}" alt="{{wine.title}}">
+					<img class="lozad" data-src="{{wine.imgURL}}" alt="{{wine.title}}">
 					<h3>{{wine.title}}</h3>
 					<span class="location">{{wine.location}}</span>
 					<span class="price">${{wine.price}}</span>
@@ -67,6 +68,10 @@
 			{% endfor %}
 		</div>
 	</div>
+	<script>
+		const observer = lozad();
+		observer.observe();
+	</script>
 </body>
 
 </html>
