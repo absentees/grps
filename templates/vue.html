@@ -4,49 +4,100 @@
 <head>
 	<title>Welcome to Vue</title>
 	<script src="https://unpkg.com/vue"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+	<style>
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
+
+		.wine-container {
+			display: flex;
+			justify-content: space-around;
+			flex-wrap: wrap;
+			width: 100%;
+		}
+
+		.wine {
+			width: 150px;
+			margin: 10px 5px;
+
+			font-size: 14px;
+		}
+
+		.wine:hover h3 {
+			text-decoration: underline;
+		}
+
+		.wine .placeholder {
+			display: block;
+			width: 150px;
+			padding-bottom: 100%;
+
+			background-color: grey;
+		}
+
+		.wine>img {
+			width: 100%;
+		}
+
+		.wine>h3 {
+			font-size: 1em;
+			margin-bottom: 0;
+		}
+
+		.wine .location {
+			display: block;
+			font-size: 0.8em;
+		}
+
+		.wine .price {
+			display: block;
+			font-weight: bolder;
+			margin-top: 5px;
+		}
+
+		.fade-enter-active,
+		.fade-leave-active {
+			transition: opacity .5s;
+		}
+
+		.fade-enter,
+		.fade-leave-to {
+			opacity: 0;
+		}
+	</style>
 </head>
 
 <body>
 	<div id="app">
-		<img src="https://vuejs.org/images/logo.png" alt="Vue logo">
-		<h1>{{ greeting }}</h1>
-		<ul>
-			<li>
-				To learn more about Vue, visit
-				<a :href="docsURL" target="_blank">
-            {{ humanizeURL(docsURL) }}
-        </a>
-			</li>
-			<li>
-				For live help with simple questions, check out
-				<a :href="discordURL" target="_blank">
-          the Discord chat
-        </a>
-			</li>
-			<li>
-				For more complex questions, post to
-				<a :href="forumURL" target="_blank">
-          the forum
-        </a>
-			</li>
-		</ul>
+		<transition name="fade">
+			<div v-if="wines" class="wine-container">
+				<a v-for="wine in wines" :href="wine.link" target="_blank">
+					<div class="wine">
+						<img :src="wine.imgURL" :alt="wine.title">
+						<h3>{{wine.title}}</h3>
+						<span class="location">{{ wine.location }}</span>
+						<span class="price">${{ wine.price }}</span>
+					</div>
+				</a>
+			</div>
+		</transition>
+
 	</div>
 
 	<script>
 		var app = new Vue({
 			el: '#app',
 			data: {
-				greeting: 'Welcome to your Vue.js app!',
-				docsURL: 'http://vuejs.org/guide/',
-				discordURL: 'https://chat.vuejs.org',
-				forumURL: 'http://forum.vuejs.org/'
+				wines: null
 			},
-			methods: {
-				humanizeURL: function (url) {
-					return url
-						.replace(/^https?:\/\//, '')
-						.replace(/\/$/, '')
-				}
+			methods: {},
+			mounted() {
+				axios
+					.get('./api')
+					.then(response => (this.wines = response.data))
 			}
 		})
 	</script>
