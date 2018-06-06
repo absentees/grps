@@ -26,7 +26,8 @@ let pagCount = 12;
 
 if (isDev) {
 	pagCount = 1;
-	apicache.clear();
+} else {
+	app.use(cache('1 day'));
 }
 
 function getWines(cb) {
@@ -48,7 +49,7 @@ function getWines(cb) {
 	});
 }
 
-app.get('/', cache('1 day'), (req, res) => {
+app.get('/', (req, res) => {
 	getWines(winesResults => {
 		res.render('index', {
 			wines: winesResults
@@ -56,7 +57,11 @@ app.get('/', cache('1 day'), (req, res) => {
 	});
 });
 
-app.get('/api', cache('1 day'), (req, res) => {
+app.get('/vue', (req, res) => {
+	res.sendFile(__dirname + '/templates/vue.html');
+});
+
+app.get('/api', (req, res) => {
 	getWines(results => {
 		res.send(results);
 	});
