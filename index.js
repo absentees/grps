@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const expressNunjucks = require('express-nunjucks');
-const cache = require('apicache').middleware;
+const apicache = require('apicache');
+const cache = apicache.middleware;
 const Xray = require('x-ray');
 const x = Xray({
 	filters: {
@@ -12,6 +13,7 @@ const x = Xray({
 });
 
 const isDev = app.get('env') === 'development';
+console.log(`isDev: ${isDev}`);
 
 app.set('views', __dirname + '/templates');
 
@@ -19,6 +21,13 @@ const njk = expressNunjucks(app, {
 	watch: isDev,
 	noCache: isDev
 });
+
+let pagCount = 12;
+
+if (isDev) {
+	pagCount = 1;
+	apicache.clear();
+}
 
 function getWines(cb) {
 	x('https://www.drnks.com/collections/all', '.product', [{
@@ -28,8 +37,7 @@ function getWines(cb) {
 		link: '@href',
 		imgURL: '.lazy[data-original]@data-original'
 		// Turn on for pagination
-	}]).paginate('.page.next-page > a@href').limit(12)(function (err, results) {
-		// }])(function (err, results) {
+	}]).paginate('.page.next-page > a@href').limit(pagCount)(function (err, results) {
 		results.forEach(element => {
 			element.price = parseInt(element.price.trim().substring(1));
 		});

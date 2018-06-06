@@ -30,6 +30,14 @@
 			text-decoration: underline;
 		}
 
+		.wine .placeholder {
+			display: block;
+			width: 150px;
+			padding-bottom: 100%;
+
+			background-color: grey;
+		}
+
 		.wine>img {
 			width: 100%;
 		}
@@ -59,6 +67,7 @@
 			{% for wine in wines %}
 			<a href="{{ wine.link }}" target="_blank">
 				<div class="wine">
+					<div class="placeholder"></div>
 					<img class="lozad" data-src="{{wine.imgURL}}" alt="{{wine.title}}">
 					<h3>{{wine.title}}</h3>
 					<span class="location">{{wine.location}}</span>
