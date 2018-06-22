@@ -73,6 +73,7 @@
 <body>
 	<div id="app">
 		<transition name="fade">
+			<div v-if="loading" class="loader">Loading GRPS...</div>
 			<div v-if="wines" class="wine-container">
 				<a v-for="wine in wines" :href="wine.link" target="_blank">
 					<div class="wine">
@@ -91,13 +92,15 @@
 		var app = new Vue({
 			el: '#app',
 			data: {
-				wines: null
+				wines: null,
+				loading: true
 			},
 			methods: {},
 			mounted() {
 				axios
 					.get('./api')
 					.then(response => (this.wines = response.data))
+					.finally((() => this.loading = false))
 			}
 		})
 	</script>

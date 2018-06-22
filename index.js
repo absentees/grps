@@ -49,15 +49,15 @@ function getWines(cb) {
 	});
 }
 
-app.get('/', (req, res) => {
-	getWines(winesResults => {
-		res.render('index', {
-			wines: winesResults
-		});
-	});
-});
+// app.get('/', (req, res) => {
+// 	getWines(winesResults => {
+// 		res.render('index', {
+// 			wines: winesResults
+// 		});
+// 	});
+// });
 
-app.get('/vue', (req, res) => {
+app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/templates/vue.html');
 });
 
