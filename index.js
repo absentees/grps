@@ -27,7 +27,7 @@ let pagCount = 12;
 if (isDev) {
 	pagCount = 1;
 } else {
-	app.use(cache('1 day'));
+	app.use(cache('12 hours'));
 }
 
 function getWines(cb) {
