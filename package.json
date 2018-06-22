@@ -12,12 +12,12 @@
 		"x-ray": "^2.3.2"
 	},
 	"scripts": {
-		"dev": "nodemon index.js",
-		"deploy": "now",
-		"start": "node index.js"
+		"dev": "NODE_ENV=development nodemon index.js",
+		"deploy": "now rm grps -y && now --public && now alias",
+		"start": "NODE_ENV=production node index.js"
 	},
 	"now": {
-		"alias": "grps",
+		"alias": "grps.now.sh",
 		"scale": {
 			"sfo1": {
 				"min": 1,
