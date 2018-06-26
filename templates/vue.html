@@ -10,6 +10,7 @@
 		a {
 			text-decoration: none;
 			color: inherit;
+			cursor: pointer;
 		}
 
 		.wine-container {
@@ -67,15 +68,28 @@
 		.fade-leave-to {
 			opacity: 0;
 		}
+
+		nav {
+			display: flex;
+			justify-content: space-around;
+		}
+
+		nav a {
+			margin: 1%;
+		}
 	</style>
 </head>
 
 <body>
 	<div id="app">
+
+		<nav v-if="wines">
+			<a v-for="sortKey in Object.keys(sortOptions)" v-on:click="sortBy = sortKey">{{sortKey}}</a>
+		</nav>
+		<div v-if="loading" class="loader">Loading GRPS...</div>
 		<transition name="fade">
-			<div v-if="loading" class="loader">Loading GRPS...</div>
 			<div v-if="wines" class="wine-container">
-				<a v-for="wine in wines" :href="wine.link" target="_blank">
+				<a v-for="wine in sort(sortBy)" :href="wine.link" target="_blank">
 					<div class="wine">
 						<img :src="wine.imgURL" :alt="wine.title">
 						<h3>{{wine.title}}</h3>
@@ -85,7 +99,6 @@
 				</a>
 			</div>
 		</transition>
-
 	</div>
 
 	<script>
@@ -93,9 +106,30 @@
 			el: '#app',
 			data: {
 				wines: null,
-				loading: true
+				loading: true,
+				sortBy: "Price: Low to High"
 			},
-			methods: {},
+			computed: {
+				sortOptions: function () {
+					return {
+						"Price: Low to High": () => {
+							return this.wines;
+						},
+						"Price: High to Low": () => {
+							console.log("high");
+							return [{
+								title: "title"
+							}];
+							// return this.wines.reverse();
+						}
+					}
+				}
+			},
+			methods: {
+				sort: function (sortOrder) {
+					return this.sortOptions[sortOrder]();
+				}
+			},
 			mounted() {
 				axios
 					.get('./api')
