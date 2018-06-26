@@ -116,11 +116,7 @@
 							return this.wines;
 						},
 						"Price: High to Low": () => {
-							console.log("high");
-							return [{
-								title: "title"
-							}];
-							// return this.wines.reverse();
+							return this.wines.slice().reverse();
 						}
 					}
 				}
