@@ -11,6 +11,7 @@ const x = Xray({
 		}
 	}
 });
+const async = require('async');
 
 const isDev = app.get('env') === 'development';
 console.log(`isDev: ${isDev}`);
@@ -30,7 +31,26 @@ if (isDev) {
 	app.use(cache('12 hours'));
 }
 
-function getWines(cb) {
+function getPNVWines(cb) {
+	x('https://pnvmerchants.com/collections/all', '.product-link', [{
+		title: '.product__title',
+		price: '.product__price',
+		link: '@href',
+		imgURL: '.product__img@src'
+		// Turn on for pagination
+	}]).paginate('.pagination__items > span.next > a@href').limit(pagCount)(function (err, results) {
+		if (err) {
+			cb(err);
+		}
+		results.forEach(element => {
+			element.price = parseInt(element.price.trim().substring(1));
+		});
+
+		cb(null, results);
+	});
+}
+
+function getWines(allResults, cb) {
 	x('https://www.drnks.com/collections/all', '.product', [{
 		title: '.product-title',
 		location: '.product-location',
@@ -39,14 +59,24 @@ function getWines(cb) {
 		imgURL: '.lazy[data-original]@data-original'
 		// Turn on for pagination
 	}]).paginate('.page.next-page > a@href').limit(pagCount)(function (err, results) {
+		if (err) {
+			cb(err);
+		}
 		results.forEach(element => {
 			element.price = parseInt(element.price.trim().substring(1));
 		});
-		results.sort((a, b) => {
-			return a.price - b.price;
-		});
-		cb(results);
+
+		allResults.push(...results)
+		cb(null, allResults);
 	});
+}
+
+function sortWines(allResults, cb) {
+	allResults.sort((a, b) => {
+		return a.price - b.price;
+	});
+
+	cb(null, allResults);
 }
 
 // app.get('/', (req, res) => {
@@ -62,9 +92,24 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api', (req, res) => {
-	getWines(results => {
-		res.send(results);
+	async.waterfall([
+		getPNVWines,
+		getWines,
+		sortWines
+	], function (err, result) {
+		res.send(result);
 	});
+
+	// let allResults = [];
+	// getPNVWines(results => {
+	// 	res.send(results);
+	// });
+
+	// getWines(r => {
+	// 	allResults.push(r);
+	// 	res.send(allResults);
+	// });
+
 });
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));
