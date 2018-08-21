@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const expressNunjucks = require('express-nunjucks');
 const apicache = require('apicache');
 const cache = apicache.middleware;
@@ -79,19 +80,7 @@ function sortWines(allResults, cb) {
 	cb(null, allResults);
 }
 
-// app.get('/', (req, res) => {
-// 	getWines(winesResults => {
-// 		res.render('index', {
-// 			wines: winesResults
-// 		});
-// 	});
-// });
-
-app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/templates/vue.html');
-});
-
-app.get('/api', (req, res) => {
+app.get('/api', cors(), (req, res) => {
 	async.waterfall([
 		getPNVWines,
 		getWines,
@@ -99,16 +88,6 @@ app.get('/api', (req, res) => {
 	], function (err, result) {
 		res.send(result);
 	});
-
-	// let allResults = [];
-	// getPNVWines(results => {
-	// 	res.send(results);
-	// });
-
-	// getWines(r => {
-	// 	allResults.push(r);
-	// 	res.send(allResults);
-	// });
 
 });
 
