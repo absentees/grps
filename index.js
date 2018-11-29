@@ -16,8 +16,7 @@ const async = require('async');
 
 const isDev = app.get('env') === 'development';
 console.log(`isDev: ${isDev}`);
-
-app.set('views', __dirname + '/templates');
+app.set("port", process.env.PORT || 5000);
 
 const njk = expressNunjucks(app, {
 	watch: isDev,
@@ -28,6 +27,7 @@ let pagCount = 12;
 
 if (isDev) {
 	pagCount = 1;
+	app.use(cache('12 hours'));
 } else {
 	app.use(cache('12 hours'));
 }
@@ -37,7 +37,8 @@ function getPNVWines(cb) {
 		title: '.product__title',
 		price: '.product__price',
 		link: '@href',
-		imgURL: '.product__img@src'
+		imgURL: '.product__img@src',
+		store: "PnV"
 		// Turn on for pagination
 	}]).paginate('.pagination__items > span.next > a@href').limit(pagCount)(function (err, results) {
 		if (err) {
@@ -57,7 +58,8 @@ function getWines(allResults, cb) {
 		location: '.product-location',
 		price: '.price',
 		link: '@href',
-		imgURL: '.lazy[data-original]@data-original'
+		imgURL: '.lazy[data-original]@data-original',
+		store: "DRNKS"
 		// Turn on for pagination
 	}]).paginate('.page.next-page > a@href').limit(pagCount)(function (err, results) {
 		if (err) {
@@ -91,4 +93,4 @@ app.get('/api', cors(), (req, res) => {
 
 });
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.listen(app.get("port"), () => console.log(`Listening on port: ${app.get("port")}`));
