@@ -37,8 +37,7 @@ function getPNVWines(cb) {
 		title: '.product__title',
 		price: '.product__price',
 		link: '@href',
-		imgURL: '.product__img@src',
-		store: "PnV"
+		imgURL: '.product__img@src'
 		// Turn on for pagination
 	}]).paginate('.pagination__items > span.next > a@href').limit(pagCount)(function (err, results) {
 		if (err) {
@@ -46,6 +45,7 @@ function getPNVWines(cb) {
 		}
 		results.forEach(element => {
 			element.price = parseInt(element.price.trim().substring(1));
+			element.store = "PNV";
 		});
 
 		cb(null, results);
@@ -58,8 +58,7 @@ function getWines(allResults, cb) {
 		location: '.product-location',
 		price: '.price',
 		link: '@href',
-		imgURL: '.lazy[data-original]@data-original',
-		store: "DRNKS"
+		imgURL: '.lazy[data-original]@data-original'
 		// Turn on for pagination
 	}]).paginate('.page.next-page > a@href').limit(pagCount)(function (err, results) {
 		if (err) {
@@ -67,6 +66,7 @@ function getWines(allResults, cb) {
 		}
 		results.forEach(element => {
 			element.price = parseInt(element.price.trim().substring(1));
+			element.store = "DRNKS";
 		});
 
 		allResults.push(...results)
